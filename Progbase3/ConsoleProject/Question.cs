@@ -4,7 +4,7 @@ namespace ConsoleProject
     {
         public long id;
         public string questionText;
-        public System.DateTime createdAt;
+        public System.DateTime createdAt; // ???
         // public long userId;
         // public long helpfulAnswerId;
 

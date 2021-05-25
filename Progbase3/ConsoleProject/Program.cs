@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using Microsoft.Data.Sqlite;
 
 namespace ConsoleProject
@@ -8,16 +10,29 @@ namespace ConsoleProject
         static UserRepository userRepository;
         static AnswerRepository answerRepository;
         static QuestionRepository questionRepository;
+        static List<string> logins;
+        static List<string> fullnames;
+        static List<string> answers;
+        static List<string> questions;
+
 
         static void Main(string[] args)
         {
-            string databaseFileName = "db.db";
+            string databaseFileName = "../../data/db.db";
             SqliteConnection connection = new SqliteConnection($"Data Source={databaseFileName}");
 
             userRepository = new UserRepository(connection);
             answerRepository = new AnswerRepository(connection);
             questionRepository = new QuestionRepository(connection);
-
+            //
+            answers = new List<string>();
+            questions = new List<string>();
+            logins = new List<string>();
+            fullnames = new List<string>();
+            GetAnswers("../../data/generator/answers");
+            GetQuestions("../../data/generator/questions");
+            GetFullnames("../../data/generator/fullnames");
+            GetLogins("../../data/generator/logins");
             //
             Console.WriteLine("> generate data? [yes|no]");
             string input = Console.ReadLine();
@@ -60,7 +75,7 @@ namespace ConsoleProject
 
         private static void AddUsersToDB()
         {
-            User[] users = GenerateUsersData();
+            List<User> users = GenerateUsersData();
             foreach(User user in users)
             {
                 long userId = userRepository.InsertUser(user);
@@ -80,11 +95,11 @@ namespace ConsoleProject
             return n;
         }
 
-        private static User[] GenerateUsersData()
+        private static List<User> GenerateUsersData()
         {
             int n = GetN();
 
-            User[] users = new User[n];
+            List<User> users = new List<User>();
 
             // get time interval
 
@@ -93,29 +108,31 @@ namespace ConsoleProject
             for(int i = 0; i < n; i++)
             {
                 User u = new User();
-                // set login
-                // set fullname
+                int index = random.Next(0, logins.Count);
+                u.login = logins[index];
+                index = random.Next(0, fullnames.Count);
+                u.fullname = fullnames[index];
                 u.isModerator = random.Next(0, 2);
                 // set createdAt
-                users[i] = u;
+                users.Add(u);
             }
             return users;
         }
 
         private static void AddAnswersToDB()
         {
-            Answer[] answers = GenerateAnswersData();
+            List<Answer> answers = GenerateAnswersData();
             foreach(Answer answer in answers)
             {
                 long userId = answerRepository.Insert(answer);
             }
         }
 
-        private static Answer[] GenerateAnswersData()
+        private static List<Answer> GenerateAnswersData()
         {
             int n = GetN();
 
-            Answer[] answers = new Answer[n];
+            List<Answer> answers = new List<Answer>();
 
             // get time interval
 
@@ -124,32 +141,96 @@ namespace ConsoleProject
                 string answerText = GetRandomAnswerText();
                 Answer answer = new Answer(answerText);
                 // set DateTime createdAt
-                answers[i] = answer;
+                answers.Add(answer);
             }
             return answers;
         }
 
         private static string GetRandomAnswerText()
         {
-            string a = "";
-            // get answer from file
-            return a;
+            Random random = new Random();
+            int index = random.Next(0, answers.Count);
+            return answers[index];
+        }
+
+        private static void GetAnswers(string path)
+        {
+            StreamReader sr = new StreamReader(path);
+            string s = "";
+            while (true)
+            {
+                s = sr.ReadLine();
+                if (s == null)
+                {
+                    break;
+                }
+                answers.Add(s);
+            }
+            sr.Close();
+        }
+
+        private static void GetQuestions(string path)
+        {
+            StreamReader sr = new StreamReader(path);
+            string s = "";
+            while (true)
+            {
+                s = sr.ReadLine();
+                if (s == null)
+                {
+                    break;
+                }
+                questions.Add(s);
+            }
+            sr.Close();
+        }
+
+        private static void GetLogins(string path)
+        {
+            StreamReader sr = new StreamReader(path);
+            string s = "";
+            while (true)
+            {
+                s = sr.ReadLine();
+                if (s == null)
+                {
+                    break;
+                }
+                logins.Add(s);
+            }
+            sr.Close();
+        }
+
+        private static void GetFullnames(string path)
+        {
+            StreamReader sr = new StreamReader(path);
+            string s = "";
+            while (true)
+            {
+                s = sr.ReadLine();
+                if (s == null)
+                {
+                    break;
+                }
+                fullnames.Add(s);
+            }
+            sr.Close();
         }
 
         private static void AddQuestionsToDB()
         {
-            Question[] questions = GenerateQuestionsData();
+            List<Question> questions = GenerateQuestionsData();
             foreach(Question question in questions)
             {
                 long userId = questionRepository.Insert(question);
             }
         }
 
-        private static Question[] GenerateQuestionsData()
+        private static List<Question> GenerateQuestionsData()
         {
             int n = GetN();
 
-            Question[] questions = new Question[n];
+            List<Question> questions = new List<Question>();
 
             // get time interval
 
@@ -158,16 +239,16 @@ namespace ConsoleProject
                 string qText = GetRandomQuestionText();
                 Question question = new Question(qText);
                 // set DateTime createdAt
-                questions[i] = question;
+                questions.Add(question);
             }
             return questions;
         }
 
         private static string GetRandomQuestionText()
         {
-            string q = "";
-            // get question from file
-            return q;
+            Random random = new Random();
+            int index = random.Next(0, questions.Count);
+            return questions[index];
         }
     }
 }

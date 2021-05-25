@@ -50,6 +50,35 @@ namespace ConsoleProject
             return result;
         }
 
+        public User GetById(long userId)
+        {
+            this.connection.Open();
+
+            SqliteCommand command = connection.CreateCommand();
+            command.CommandText = @"SELECT * FROM users WHERE id = $id";
+            command.Parameters.AddWithValue("$id", userId);
+
+            SqliteDataReader reader = command.ExecuteReader();
+
+            if(reader.Read())
+            {
+                User user = new User();
+                user.id = long.Parse(reader.GetString(0));
+                user.login = reader.GetString(1);
+                user.fullname = reader.GetString(2);
+                user.isModerator = int.Parse(reader.GetString(3));
+                user.createdAt = DateTime.Parse(reader.GetString(4));
+
+                this.connection.Close();
+                return user;
+            }
+            else
+            {
+                this.connection.Close();
+                return null;
+            }
+        }
+
         public User GetByUsername(string username)
         {
             this.connection.Open();

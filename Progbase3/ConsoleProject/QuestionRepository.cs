@@ -19,8 +19,8 @@ namespace ConsoleProject
             SqliteCommand command = connection.CreateCommand();
             command.CommandText = 
             @"
-                INSERT INTO questions (questionText, createdAt, userId)
-                VALUES ($questionText, $createdAt, $userId);
+                INSERT INTO questions (questionText, createdAt)
+                VALUES ($questionText, $createdAt);
             
                 SELECT last_insert_rowid();
             ";

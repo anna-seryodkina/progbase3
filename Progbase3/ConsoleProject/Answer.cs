@@ -4,15 +4,14 @@ namespace ConsoleProject
     {
         public long id;
         public string answerText;
-        public System.DateTime createdAt; // ??? 
-        // public long userId;
-        // public long questionId;
+        public System.DateTime createdAt;
+        public long authorId;
+        public long questionId;
+        public User author;
+        public Question question;
 
-        public Answer(string text) // (string text, long questionId, long userId)
+        public Answer()
         {
-            // this.questionId = questionId;
-            // this.userId = userId;
-            this.answerText = text;
             this.createdAt = System.DateTime.Now;
         }
     }

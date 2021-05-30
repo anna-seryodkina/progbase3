@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using Microsoft.Data.Sqlite;
+using Terminal.Gui;
 
 namespace ConsoleProject
 {
@@ -34,21 +35,64 @@ namespace ConsoleProject
             GetFullnames("../../data/generator/fullnames");
             GetLogins("../../data/generator/logins");
             //
-            Console.WriteLine("> generate data? [yes|no]");
-            string input = Console.ReadLine();
-            if(input == "yes")
+            while(true)
             {
-                GenerateData();
+                Console.WriteLine("> generate data? [yes|no]");
+                string input = Console.ReadLine();
+                if(input == "yes")
+                {
+                    GenerateData();
+                    continue;
+                }
+                else if(input == "no" || input == "")
+                {
+                    break;
+                }
+                else
+                {
+                    Console.WriteLine(">> incorrect input.");
+                    continue;
+                }
             }
-            else if(input == "no")
+
+
+            Application.Init();
+
+            Toplevel top = Application.Top; 
+
+            // MainWindow win = new MainWindow();
+            // win.SetRepository(activityRepository);
+
+            MenuBar menu = new MenuBar(new MenuBarItem[] {
+                new MenuBarItem ("_File", new MenuItem [] {
+                    new MenuItem("_New", "", OnQuit), // win.OnCreateButtonClicked),
+                    new MenuItem ("_Quit", "", OnQuit)
+                }),
+                new MenuBarItem ("_Help", new MenuItem [] {
+                    new MenuItem("_About", "", OnAbout)
+                }),
+            });
+
+            // top.Add(menu, win);
+            top.Add(menu);
+
+            Application.Run();
+        }
+
+        static void OnAbout()
+        {
+            string information = "hi :)\nthis program allows you to manage your data\n(\\__/)\n( . .)\n/ >< \\\n   ";
+
+            int index = MessageBox.Query("info", information, "Ok");
+            if(index == 1)
             {
-                return;
+                Application.RequestStop();
             }
-            else
-            {
-                Console.WriteLine(">> incorrect input.");
-                return;
-            }
+        }
+
+        static void OnQuit()
+        {
+            Application.RequestStop();
         }
 
         private static void GenerateData()
@@ -133,14 +177,23 @@ namespace ConsoleProject
             int n = GetN();
 
             List<Answer> answers = new List<Answer>();
+            Random random = new Random();
 
             // get time interval
 
             for(int i = 0; i < n; i++)
             {
+                Answer answer = new Answer();
                 string answerText = GetRandomAnswerText();
-                Answer answer = new Answer(answerText);
+                answer.answerText = answerText;
                 // set DateTime createdAt
+                List<int> ids = userRepository.GetIdList();
+                int randomIndex = random.Next(0, ids.Count);
+                answer.authorId = ids[randomIndex];
+
+                List<int> qIDs = questionRepository.GetQuestionIdList();
+                int index = random.Next(0, qIDs.Count);
+                answer.questionId = qIDs[index];
                 answers.Add(answer);
             }
             return answers;
@@ -231,14 +284,20 @@ namespace ConsoleProject
             int n = GetN();
 
             List<Question> questions = new List<Question>();
+            Random random = new Random();
 
             // get time interval
 
             for(int i = 0; i < n; i++)
             {
+                Question question = new Question();
                 string qText = GetRandomQuestionText();
-                Question question = new Question(qText);
-                // set DateTime createdAt
+                question.questionText = qText;
+                // set DateTime createdAt 
+                List<int> ids = userRepository.GetIdList();
+                int randomIndex = random.Next(0, ids.Count);
+                question.authorId = ids[randomIndex];
+                // random helpfulAnswerId ???
                 questions.Add(question);
             }
             return questions;

@@ -1,17 +1,19 @@
+using System.Collections.Generic;
+
 namespace ConsoleProject
 {
     public class Question
     {
         public long id;
         public string questionText;
-        public System.DateTime createdAt; // ???
-        // public long userId;
-        // public long helpfulAnswerId;
+        public System.DateTime createdAt;
+        public long authorId;
+        public long helpfulAnswerId;
+        public User author;
+        public List<Answer> answers;
 
-        public Question(string text) // (long userId, string text)
+        public Question()
         {
-            // this.userId = userId;
-            this.questionText = text;
             this.createdAt = System.DateTime.Now;
         }
     }

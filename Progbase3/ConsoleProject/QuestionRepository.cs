@@ -34,14 +34,31 @@ namespace ConsoleProject
             return newId;
         }
 
-        public List<Question> GetAll()
-        {
-            throw new NotImplementedException();
-        }
 
-        public void Read()
+        public List<Question> GetAllQuestionsByUserId(long userId)
         {
-            throw new NotImplementedException();
+            List<Question> qList = new List<Question>();
+
+            this.connection.Open();
+
+            SqliteCommand command = connection.CreateCommand();
+            command.CommandText = @"SELECT * FROM questions WHERE authorId = $id";
+            command.Parameters.AddWithValue("$id", userId);
+
+            SqliteDataReader reader = command.ExecuteReader();
+
+            while(reader.Read())
+            {
+                Question q = new Question();
+                q.id = int.Parse(reader.GetString(0));
+                q.questionText = reader.GetString(1);
+                q.authorId = int.Parse(reader.GetString(2));
+                q.helpfulAnswerId = int.Parse(reader.GetString(3));
+                q.createdAt = DateTime.Parse(reader.GetString(4));
+                qList.Add(q);
+            }
+            this.connection.Close();
+            return qList;
         }
 
         public void Update()
@@ -68,6 +85,27 @@ namespace ConsoleProject
             {
                 return true;
             }
+        }
+
+        public List<int> GetQuestionIdList()
+        {
+            List<int> list = new List<int>();
+
+            this.connection.Open();
+ 
+            SqliteCommand command = connection.CreateCommand();
+            command.CommandText = @"SELECT id FROM questions";
+
+            SqliteDataReader reader = command.ExecuteReader();
+
+            while(reader.Read())
+            {
+                list.Add(int.Parse(reader.GetString(0)));
+            }
+
+            this.connection.Close();
+
+            return list;
         }
     }
 }

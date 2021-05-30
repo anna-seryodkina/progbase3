@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace ConsoleProject
 {
@@ -9,6 +10,8 @@ namespace ConsoleProject
         public string fullname;
         public int isModerator;
         public DateTime createdAt;
+        public List<Answer> answers;
+        public List<Question> questions;
 
         public User()
         {

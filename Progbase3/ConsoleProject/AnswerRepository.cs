@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Microsoft.Data.Sqlite;
 
 namespace ConsoleProject
@@ -44,9 +45,9 @@ namespace ConsoleProject
 
             if(reader.Read())
             {
-                string text = reader.GetString(1);
-                Answer answer = new Answer(text);
+                Answer answer = new Answer();
                 answer.id = long.Parse(reader.GetString(0));
+                answer.answerText = reader.GetString(1);
 
                 this.connection.Close();
                 return answer;
@@ -58,9 +59,56 @@ namespace ConsoleProject
             }
         }
 
-        public void Read()
+        public List<Answer> GetAllAnswersByUserId(long userId)
         {
-            throw new NotImplementedException();
+            List<Answer> aList = new List<Answer>();
+
+            this.connection.Open();
+
+            SqliteCommand command = connection.CreateCommand();
+            command.CommandText = @"SELECT * FROM answers WHERE authorId = $id";
+            command.Parameters.AddWithValue("$id", userId);
+
+            SqliteDataReader reader = command.ExecuteReader();
+
+            while(reader.Read())
+            {
+                Answer a = new Answer();
+                a.id = int.Parse(reader.GetString(0));
+                a.answerText = reader.GetString(1);
+                a.authorId = int.Parse(reader.GetString(2));
+                a.questionId = int.Parse(reader.GetString(3));
+                a.createdAt = DateTime.Parse(reader.GetString(4));
+                aList.Add(a);
+            }
+            this.connection.Close();
+            return aList;
+        }
+
+        public List<Answer> GetAllAnswersByQuestionId(long questionId)
+        {
+            List<Answer> aList = new List<Answer>();
+
+            this.connection.Open();
+
+            SqliteCommand command = connection.CreateCommand();
+            command.CommandText = @"SELECT * FROM answers WHERE questionId = $id";
+            command.Parameters.AddWithValue("$id", questionId);
+
+            SqliteDataReader reader = command.ExecuteReader();
+
+            while(reader.Read())
+            {
+                Answer a = new Answer();
+                a.id = int.Parse(reader.GetString(0));
+                a.answerText = reader.GetString(1);
+                a.authorId = int.Parse(reader.GetString(2));
+                a.questionId = int.Parse(reader.GetString(3));
+                a.createdAt = DateTime.Parse(reader.GetString(4));
+                aList.Add(a);
+            }
+            this.connection.Close();
+            return aList;
         }
 
         public void Update()

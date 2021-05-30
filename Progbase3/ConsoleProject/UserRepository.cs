@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Microsoft.Data.Sqlite;
 
 namespace ConsoleProject
@@ -50,7 +51,7 @@ namespace ConsoleProject
             return result;
         }
 
-        public User GetById(long userId)
+        public User GetUserById(long userId)
         {
             this.connection.Open();
 
@@ -113,6 +114,18 @@ namespace ConsoleProject
             throw new NotImplementedException();
         }
 
+        public User GetQAndAByUserId_Export(long userId, QuestionRepository qRepo, AnswerRepository aRepo)
+        {
+            User user = new User();
+            user.questions = qRepo.GetAllQuestionsByUserId(userId);
+            foreach(Question question in user.questions)
+            {
+                question.answers = aRepo.GetAllAnswersByQuestionId(question.id);
+            }
+            user.answers = aRepo.GetAllAnswersByUserId(userId);
+            return user;
+        }
+
         public bool DeleteUser(long userID)
         {
             this.connection.Open();
@@ -132,6 +145,27 @@ namespace ConsoleProject
             {
                 return true;
             }
+        }
+
+        public List<int> GetIdList()
+        {
+            List<int> list = new List<int>();
+
+            this.connection.Open();
+ 
+            SqliteCommand command = connection.CreateCommand();
+            command.CommandText = @"SELECT id FROM users";
+
+            SqliteDataReader reader = command.ExecuteReader();
+
+            while(reader.Read())
+            {
+                list.Add(int.Parse(reader.GetString(0)));
+            }
+
+            this.connection.Close();
+
+            return list;
         }
     }
 }

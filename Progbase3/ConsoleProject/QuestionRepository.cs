@@ -12,7 +12,7 @@ namespace ConsoleProject
             this.connection = connection;
         }
 
-        public long Insert(Question question)
+        public long Insert(Question question) // update command text!
         {
             this.connection.Open();
 
@@ -105,6 +105,67 @@ namespace ConsoleProject
 
             this.connection.Close();
 
+            return list;
+        }
+
+        public long GetTotalPages(int pageSize)
+        {
+            connection.Open();
+
+            SqliteCommand command = connection.CreateCommand();
+            command.CommandText = 
+            @"
+                SELECT COUNT(*) FROM questions;
+            ";
+            long numOfRows = (long)command.ExecuteScalar();
+
+            connection.Close();
+
+            long pages = 0;
+            if(numOfRows%pageSize != 0)
+            {
+                pages = numOfRows/pageSize + 1;
+            }
+            else
+            {
+                pages = numOfRows/pageSize;
+            }
+            return pages;
+        }
+
+        public List<Question> GetPage(int pageNumber, int pageSize)
+        {
+            if(pageNumber < 1)
+            {
+                throw new ArgumentOutOfRangeException(nameof(pageNumber));
+            }
+            List<Question> list = new List<Question>();
+
+            connection.Open();
+
+            SqliteCommand command = connection.CreateCommand();
+            command.CommandText = 
+            @"
+                SELECT * FROM questions LIMIT $pageS OFFSET ($pageN-1)*$pageS;
+            ";
+            command.Parameters.AddWithValue("$pageN", pageNumber);
+            command.Parameters.AddWithValue("$pageS", pageSize);
+
+            SqliteDataReader reader = command.ExecuteReader();
+
+            while (reader.Read())
+            {
+                Question q = new Question();
+                q.id = int.Parse(reader.GetString(0));
+                q.questionText = reader.GetString(1);
+                q.authorId = int.Parse(reader.GetString(2));
+                q.helpfulAnswerId = int.Parse(reader.GetString(3));
+                q.createdAt = DateTime.Parse(reader.GetString(4));
+                list.Add(q);
+            }
+            reader.Close();
+
+            connection.Close();
             return list;
         }
     }

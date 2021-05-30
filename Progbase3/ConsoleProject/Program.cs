@@ -56,27 +56,26 @@ namespace ConsoleProject
             }
 
 
-            Application.Init();
+            // Application.Init();
 
-            Toplevel top = Application.Top; 
+            // Toplevel top = Application.Top; 
 
             // MainWindow win = new MainWindow();
-            // win.SetRepository(activityRepository);
+            // win.SetRepository(userRepository);
 
-            MenuBar menu = new MenuBar(new MenuBarItem[] {
-                new MenuBarItem ("_File", new MenuItem [] {
-                    new MenuItem("_New", "", OnQuit), // win.OnCreateButtonClicked),
-                    new MenuItem ("_Quit", "", OnQuit)
-                }),
-                new MenuBarItem ("_Help", new MenuItem [] {
-                    new MenuItem("_About", "", OnAbout)
-                }),
-            });
+            // MenuBar menu = new MenuBar(new MenuBarItem[] {
+            //     new MenuBarItem ("_File", new MenuItem [] {
+            //         new MenuItem("_New", "", win.OnCreateButtonClicked),
+            //         new MenuItem ("_Quit", "", OnQuit)
+            //     }),
+            //     new MenuBarItem ("_Help", new MenuItem [] {
+            //         new MenuItem("_About", "", OnAbout)
+            //     }),
+            // });
 
             // top.Add(menu, win);
-            top.Add(menu);
 
-            Application.Run();
+            // Application.Run();
         }
 
         static void OnAbout()
@@ -156,7 +155,7 @@ namespace ConsoleProject
                 u.login = logins[index];
                 index = random.Next(0, fullnames.Count);
                 u.fullname = fullnames[index];
-                u.isModerator = random.Next(0, 2);
+                u.isModerator = bool.Parse(random.Next(0, 2).ToString());
                 // set createdAt
                 users.Add(u);
             }

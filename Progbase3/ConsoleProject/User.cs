@@ -8,7 +8,7 @@ namespace ConsoleProject
         public long id;
         public string login;
         public string fullname;
-        public int isModerator;
+        public bool isModerator;
         public DateTime createdAt;
         public List<Answer> answers;
         public List<Question> questions;

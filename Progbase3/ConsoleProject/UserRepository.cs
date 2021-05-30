@@ -67,7 +67,7 @@ namespace ConsoleProject
                 user.id = long.Parse(reader.GetString(0));
                 user.login = reader.GetString(1);
                 user.fullname = reader.GetString(2);
-                user.isModerator = int.Parse(reader.GetString(3));
+                user.isModerator = bool.Parse(reader.GetString(3));
                 user.createdAt = DateTime.Parse(reader.GetString(4));
 
                 this.connection.Close();
@@ -96,7 +96,7 @@ namespace ConsoleProject
                 user.id = long.Parse(reader.GetString(0));
                 user.login = reader.GetString(1);
                 user.fullname = reader.GetString(2);
-                user.isModerator = int.Parse(reader.GetString(3));
+                user.isModerator = bool.Parse(reader.GetString(3));
                 user.createdAt = DateTime.Parse(reader.GetString(4));
 
                 this.connection.Close();
@@ -165,6 +165,68 @@ namespace ConsoleProject
 
             this.connection.Close();
 
+            return list;
+        }
+
+        public long GetTotalPages(int pageSize)
+        {
+            connection.Open();
+
+            SqliteCommand command = connection.CreateCommand();
+            command.CommandText = 
+            @"
+                SELECT COUNT(*) FROM users;
+            ";
+            long numOfRows = (long)command.ExecuteScalar();
+
+            connection.Close();
+
+            long pages = 0;
+            if(numOfRows%pageSize != 0)
+            {
+                pages = numOfRows/pageSize + 1;
+            }
+            else
+            {
+                pages = numOfRows/pageSize;
+            }
+            return pages;
+        }
+
+        public List<User> GetPage(int pageNumber, int pageSize)
+        {
+            if(pageNumber < 1)
+            {
+                throw new ArgumentOutOfRangeException(nameof(pageNumber));
+            }
+            List<User> list = new List<User>();
+
+            connection.Open();
+
+            SqliteCommand command = connection.CreateCommand();
+            command.CommandText = 
+            @"
+                SELECT * FROM users LIMIT $pageS OFFSET ($pageN-1)*$pageS;
+            ";
+            command.Parameters.AddWithValue("$pageN", pageNumber);
+            command.Parameters.AddWithValue("$pageS", pageSize);
+
+            SqliteDataReader reader = command.ExecuteReader();
+
+            while (reader.Read())
+            {
+                User user = new User();
+
+                user.id = int.Parse(reader.GetString(0));
+                user.login = reader.GetString(1);
+                user.fullname = reader.GetString(2);
+                user.isModerator = bool.Parse(reader.GetString(3));
+                user.createdAt = DateTime.Parse(reader.GetString(4));
+                list.Add(user);
+            }
+            reader.Close();
+
+            connection.Close();
             return list;
         }
     }

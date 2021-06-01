@@ -114,8 +114,11 @@ namespace ConsoleProject
             throw new NotImplementedException();
         }
 
-        public User GetQAndAByUserId_Export(long userId, QuestionRepository qRepo, AnswerRepository aRepo)
+        public User GetQAndAByUserId_Export(long userId)
         {
+            QuestionRepository qRepo = new QuestionRepository(connection);
+            AnswerRepository aRepo = new AnswerRepository(connection);
+
             User user = new User();
             user.questions = qRepo.GetAllQuestionsByUserId(userId);
             foreach(Question question in user.questions)

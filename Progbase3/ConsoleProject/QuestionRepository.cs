@@ -12,26 +12,43 @@ namespace ConsoleProject
             this.connection = connection;
         }
 
-        public long Insert(Question question) // update command text!
+        public long Insert(Question question)
         {
             this.connection.Open();
 
             SqliteCommand command = connection.CreateCommand();
             command.CommandText = 
             @"
-                INSERT INTO questions (questionText, createdAt)
-                VALUES ($questionText, $createdAt);
+                INSERT INTO questions (questionText, createdAt, authorId, helpfulAnswerId)
+                VALUES ($questionText, $createdAt, $authorId, $helpfulAnswerId);
             
                 SELECT last_insert_rowid();
             ";
             command.Parameters.AddWithValue("$questionText", question.questionText);
             command.Parameters.AddWithValue("$createdAt", question.createdAt.ToString("o"));
-            // command.Parameters.AddWithValue("$userId", );
+            command.Parameters.AddWithValue("$authorId", question.authorId);
+            command.Parameters.AddWithValue("$helpfulAnswerId", question.helpfulAnswerId);
 
             long newId = (long)command.ExecuteScalar();
 
             this.connection.Close();
             return newId;
+        }
+
+        public bool QuestionExists(long questionId)
+        {
+            this.connection.Open();
+
+            SqliteCommand command = connection.CreateCommand();
+            command.CommandText = @"SELECT * FROM questions WHERE id = $id";
+            command.Parameters.AddWithValue("$id", questionId);
+
+            SqliteDataReader reader = command.ExecuteReader();
+
+            bool result = reader.Read();
+            this.connection.Close();
+
+            return result;
         }
 
 

@@ -6,10 +6,7 @@ public class CreateAnswerDialog : Dialog
 {
     public bool canceledA;
 
-    // protected RadioGroup activityTypeRadioGr;
-    // protected TextField activityNameInput;
-    // protected TextView commentTextView;
-    // protected TextField distanceInput;
+    protected TextField answerTextInput;
 
 
     public CreateAnswerDialog()
@@ -19,14 +16,14 @@ public class CreateAnswerDialog : Dialog
         this.Height = Dim.Percent(80);
 
         Button cancelBtn = new Button("Cancel");
-        cancelBtn.Clicked += OnQuestionCancelled;
+        cancelBtn.Clicked += OnAnswerCancelled;
 
         Button okBtn = new Button("Ok")
         {
             X = Pos.Right(cancelBtn) + 2,
             Y = Pos.Top(cancelBtn),
         };
-        okBtn.Clicked += OnQuestionSubmit;
+        okBtn.Clicked += OnAnswerSubmit;
 
         this.AddButton(cancelBtn);
         this.AddButton(okBtn);
@@ -34,41 +31,12 @@ public class CreateAnswerDialog : Dialog
 
         int rightColumnX = 20;
 
-        // Label activityTypeLbl = new Label(2, 2, "Type:");
-        // activityTypeRadioGr = new RadioGroup()
-        // {
-        //     X = rightColumnX, Y = Pos.Top(activityTypeLbl),
-        //     RadioLabels = new NStack.ustring[]{"walking", "running", "cycling", "swimming", "other"},
-        // };
-        // this.Add(activityTypeLbl, activityTypeRadioGr);
-
-
-
-        // Label activityNameLbl = new Label(2, 8, "Name:");
-        // activityNameInput = new TextField("")
-        // {
-        //     X = rightColumnX, Y = Pos.Top(activityNameLbl), Width = 40,
-        // };
-        // this.Add(activityNameLbl, activityNameInput);
-
-
-        // Label distanceLbl = new Label(2, 10, "Distance:");
-        // distanceInput = new TextField("")
-        // {
-        //     X = rightColumnX, Y = Pos.Top(distanceLbl), Width = 40,
-        // };
-        // this.Add(distanceLbl, distanceInput);
-
-
-        // Label commentLbl = new Label(2, 12, "Comment:");
-        // commentTextView = new TextView()
-        // {
-        //     X = rightColumnX, Y = Pos.Top(commentLbl),
-        //     Width = 40,
-        //     Height = 7,
-        //     Text =  "",
-        // };
-        // this.Add(commentLbl, commentTextView);
+        Label answerTextLbl = new Label(2, 2, "Answer:");
+        answerTextInput = new TextField("")
+        {
+            X = rightColumnX, Y = Pos.Top(answerTextLbl), Width = 40,
+        };
+        this.Add(answerTextLbl, answerTextInput);
 
     }
 
@@ -76,20 +44,17 @@ public class CreateAnswerDialog : Dialog
     {
         return new Answer()
         {
-            // type = Program.activities[activityTypeRadioGr.SelectedItem],
-            // name = activityNameInput.Text.ToString(),
-            // comment = commentTextView.Text.ToString(),
-            // distance = Convert.ToInt32(distanceInput.Text.ToString()),
+            answerText = answerTextInput.Text.ToString(),
         };
     }
 
-    private void OnQuestionCancelled()
+    private void OnAnswerCancelled()
     {
         this.canceledA = true;
         Application.RequestStop();
     }
 
-    private void OnQuestionSubmit()
+    private void OnAnswerSubmit()
     {
         this.canceledA = false;
         Application.RequestStop();

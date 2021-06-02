@@ -56,6 +56,14 @@ namespace ConsoleProject
             }
 
 
+            // ----------------- FOR TESTS -----------------
+            string dir = "./../../data/zip";
+            User user = userRepository.GetExportData(1);
+            Im_Ex_port ex = new Im_Ex_port();
+            ex.Export(user, dir);
+            // ---------------------------------------------
+
+
             // Application.Init();
 
             // Toplevel top = Application.Top; 
@@ -65,7 +73,7 @@ namespace ConsoleProject
 
             // MenuBar menu = new MenuBar(new MenuBarItem[] {
             //     new MenuBarItem ("_File", new MenuItem [] {
-            //         new MenuItem("_New", "", win.OnCreateButtonClicked),
+            //         new MenuItem("_New", "", OnQuit),
             //         new MenuItem ("_Quit", "", OnQuit)
             //     }),
             //     new MenuBarItem ("_Help", new MenuItem [] {
@@ -73,7 +81,7 @@ namespace ConsoleProject
             //     }),
             // });
 
-            // top.Add(menu, win);
+            // top.Add(menu);
 
             // Application.Run();
         }
@@ -94,7 +102,7 @@ namespace ConsoleProject
             Application.RequestStop();
         }
 
-        private static void GenerateData()
+        public static void GenerateData()
         {
             Console.WriteLine("> enter type: [user|answer|question]");
             string typeInput = Console.ReadLine();
@@ -155,7 +163,7 @@ namespace ConsoleProject
                 u.login = logins[index];
                 index = random.Next(0, fullnames.Count);
                 u.fullname = fullnames[index];
-                u.isModerator = bool.Parse(random.Next(0, 2).ToString());
+                u.isModerator = random.Next(0, 2).ToString() != "0";
                 // set createdAt
                 users.Add(u);
             }

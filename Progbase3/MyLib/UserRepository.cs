@@ -67,7 +67,7 @@ namespace ConsoleProject
                 user.id = long.Parse(reader.GetString(0));
                 user.login = reader.GetString(1);
                 user.fullname = reader.GetString(2);
-                user.isModerator = bool.Parse(reader.GetString(3));
+                user.isModerator = reader.GetString(3) != "0";
                 user.createdAt = DateTime.Parse(reader.GetString(4));
 
                 this.connection.Close();
@@ -96,7 +96,7 @@ namespace ConsoleProject
                 user.id = long.Parse(reader.GetString(0));
                 user.login = reader.GetString(1);
                 user.fullname = reader.GetString(2);
-                user.isModerator = bool.Parse(reader.GetString(3));
+                user.isModerator = reader.GetString(3) != "0";
                 user.createdAt = DateTime.Parse(reader.GetString(4));
 
                 this.connection.Close();
@@ -114,12 +114,12 @@ namespace ConsoleProject
             throw new NotImplementedException();
         }
 
-        public User GetQAndAByUserId_Export(long userId)
+        public User GetExportData(long userId)
         {
             QuestionRepository qRepo = new QuestionRepository(connection);
             AnswerRepository aRepo = new AnswerRepository(connection);
 
-            User user = new User();
+            User user = GetUserById(userId);
             user.questions = qRepo.GetAllQuestionsByUserId(userId);
             foreach(Question question in user.questions)
             {
@@ -223,7 +223,7 @@ namespace ConsoleProject
                 user.id = int.Parse(reader.GetString(0));
                 user.login = reader.GetString(1);
                 user.fullname = reader.GetString(2);
-                user.isModerator = bool.Parse(reader.GetString(3));
+                user.isModerator = reader.GetString(3) != "0";
                 user.createdAt = DateTime.Parse(reader.GetString(4));
                 list.Add(user);
             }

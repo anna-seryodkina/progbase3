@@ -15,9 +15,11 @@ namespace ConsoleProject
     public class Im_Ex_port
     {
         public SqliteConnection connection;
-        public string filenameUsersAnswer;
-        public string filenameQuestion;
-        string filenameQuestionAnswers;
+        public string filenameUsersAnswer = "users_answers.xml";
+        public string filenameQuestion = "questions.xml";
+        public string filenameQuestionAnswers = "questions_answers.xml";
+
+
         public void Import(string path)
         {
             QuestionRepository questionRepository = new QuestionRepository(connection);
@@ -53,31 +55,16 @@ namespace ConsoleProject
 
         }
 
-        public void Export(User user, string filenameUsersAnswer, string filenameQuestion, string filenameQuestionAnswers)
+        public void Export(User user, string exportDirectoryName)
         {
-            this.filenameUsersAnswer = filenameUsersAnswer;
-            this.filenameQuestion = filenameQuestion;
-            this.filenameQuestionAnswers = filenameQuestionAnswers;
-
-            if(!System.IO.File.Exists(filenameUsersAnswer))
-            {
-                throw new Exception($"File does not exist: {filenameUsersAnswer}"); // not exception шоб не падало!
-            }
-
-            if(!System.IO.File.Exists(filenameQuestion))
-            {
-                throw new Exception($"File does not exist: {filenameQuestion}"); // not exception шоб не падало!
-            }
-
-            if(!System.IO.File.Exists(filenameQuestionAnswers))
-            {
-                throw new Exception($"File does not exist: {filenameQuestionAnswers}"); // not exception шоб не падало!
-            }
+            string usersAnswersPath = exportDirectoryName + "/" + this.filenameUsersAnswer;
+            string questionsPath = exportDirectoryName + "/" + this.filenameQuestion;
+            string questionAnswersPath = exportDirectoryName + "/" + this.filenameQuestionAnswers;
 
             // users_answers.xml
             Root<Answer> usersAnswersRoot = new Root<Answer>();
             usersAnswersRoot.root = user.answers;
-            Serialize<Answer>(filenameUsersAnswer, usersAnswersRoot);
+            Serialize<Answer>(usersAnswersPath, usersAnswersRoot);
 
             // questions_answers.xml
             Root<Answer> questionAnswersRoot = new Root<Answer>();
@@ -87,16 +74,22 @@ namespace ConsoleProject
                 {
                     questionAnswersRoot.root.Add(answer);
                 }
-                question.answers = default; // to not serialize answers into questions.xml ??????????
+                question.answers = default; // to not serialize answers into questions.xml
             }
-            Serialize<Answer>(filenameQuestionAnswers, questionAnswersRoot);
+            Serialize<Answer>(questionAnswersPath, questionAnswersRoot);
 
             // questions.xml
             Root<Question> qRoot = new Root<Question>();
             qRoot.root = user.questions;
-            Serialize<Question>(filenameQuestion, qRoot);
+            Serialize<Question>(questionsPath, qRoot);
 
-            // заархівувати файли!!!
+
+
+            // archive
+            string startPath = @exportDirectoryName;
+            string zipPath = @exportDirectoryName + ".zip";
+
+            ZipFile.CreateFromDirectory(startPath, zipPath);
         }
 
         private void Serialize<T>(string filename, Root<T> root)

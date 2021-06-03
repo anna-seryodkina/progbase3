@@ -6,9 +6,7 @@ public class CreateQuestionDialog : Dialog
 {
     public bool canceledQ;
 
-    // protected TextField loginInput;
-    // protected TextField fullnameInput;
-    // protected CheckBox isModeratorCheckBox;
+    protected TextField questionTextInput;
 
 
     public CreateQuestionDialog()
@@ -33,28 +31,12 @@ public class CreateQuestionDialog : Dialog
 
         int rightColumnX = 20;
 
-        // Label loginLabel = new Label(2, 2, "Login:");
-        // loginInput = new TextField("")
-        // {
-        //     X = rightColumnX, Y = Pos.Top(loginLabel), Width = 40,
-        // };
-        // this.Add(loginLabel, loginInput);
-
-
-        // Label fullnameLabel = new Label(2, 4, "Fullname:");
-        // fullnameInput = new TextField("")
-        // {
-        //     X = rightColumnX, Y = Pos.Top(fullnameLabel), Width = 40,
-        // };
-        // this.Add(fullnameLabel, fullnameInput);
-
-
-        // Label isModeratorLabel = new Label(2, 6, "Is moderator:");
-        // isModeratorCheckBox = new CheckBox("")
-        // {
-        //     X = rightColumnX, Y = Pos.Top(isModeratorLabel), Width = 40,
-        // };
-        // this.Add(isModeratorLabel, isModeratorCheckBox);
+        Label questionTextLbl = new Label(2, 2, "Question:");
+        questionTextInput = new TextField("")
+        {
+            X = rightColumnX, Y = Pos.Top(questionTextLbl), Width = 40,
+        };
+        this.Add(questionTextLbl, questionTextInput);
 
     }
 
@@ -62,9 +44,7 @@ public class CreateQuestionDialog : Dialog
     {
         return new Question()
         {
-            // login = loginInput.Text.ToString(),
-            // fullname = fullnameInput.Text.ToString(),
-            // isModerator = isModeratorCheckBox.Checked,
+            questionText = questionTextInput.Text.ToString(),
         };
     }
 

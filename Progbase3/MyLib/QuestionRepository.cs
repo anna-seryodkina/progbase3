@@ -78,7 +78,7 @@ namespace ConsoleProject
             return qList;
         }
 
-        public void Update()
+        public bool Update(long questionId, Question question)
         {
             throw new NotImplementedException();
         }

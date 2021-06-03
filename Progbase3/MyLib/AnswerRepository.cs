@@ -129,7 +129,7 @@ namespace ConsoleProject
             return aList;
         }
 
-        public void Update()
+        public bool Update(long answerId, Answer answer)
         {
             throw new NotImplementedException();
         }

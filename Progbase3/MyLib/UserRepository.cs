@@ -109,7 +109,7 @@ namespace ConsoleProject
             }
         }
 
-        public void Update()
+        public bool Update(long userId, User user)
         {
             throw new NotImplementedException();
         }

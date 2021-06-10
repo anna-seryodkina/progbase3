@@ -6,7 +6,7 @@ public class OpenAnswerDialog : Dialog
 {
     public bool deletedA;
     public bool updatedA;
-    protected TextField answerTextInput;
+    protected TextView answerTextInput;
 
     protected Answer answer;
 
@@ -36,13 +36,12 @@ public class OpenAnswerDialog : Dialog
         int rightColumnX = 20;
 
         Label answerTextLbl = new Label(2, 2, "Answer:");
-        answerTextInput = new TextField("")
+        answerTextInput = new TextView()
         {
             X = rightColumnX, Y = Pos.Top(answerTextLbl), Width = 40,
-            ReadOnly = true,
+            Height = 40, ReadOnly = true,
         };
         this.Add(answerTextLbl, answerTextInput);
-
     }
 
     public void SetAnswer(Answer answer)

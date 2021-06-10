@@ -6,7 +6,7 @@ public class CreateQuestionDialog : Dialog
 {
     public bool canceledQ;
 
-    protected TextField questionTextInput;
+    protected TextView questionTextInput;
 
 
     public CreateQuestionDialog()
@@ -32,12 +32,11 @@ public class CreateQuestionDialog : Dialog
         int rightColumnX = 20;
 
         Label questionTextLbl = new Label(2, 2, "Question:");
-        questionTextInput = new TextField("")
+        questionTextInput = new TextView()
         {
-            X = rightColumnX, Y = Pos.Top(questionTextLbl), Width = 40,
+            X = rightColumnX, Y = Pos.Top(questionTextLbl), Width = 40, Height = 40,
         };
         this.Add(questionTextLbl, questionTextInput);
-
     }
 
     public Question GetQuestion()

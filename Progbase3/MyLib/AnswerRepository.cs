@@ -12,6 +12,102 @@ namespace ConsoleProject
             this.connection = connection;
         }
 
+        public int CountAnswers(long userId, DateTime date)
+        {
+            this.connection.Open();
+
+            int countAnswers = 0;
+            int daysInMonth = DateTime.DaysInMonth(date.Year, date.Month);
+
+            for(int i = 1; i <= daysInMonth; i++)
+            {
+                SqliteCommand command = connection.CreateCommand();
+                command.CommandText = 
+                @"
+                    SELECT COUNT(*) From answers
+                    WHERE authorId = $userId
+                    AND createdAt LIKE $date || '%'
+                ";
+                DateTime newDate = new DateTime(date.Year, date.Month, i);
+                string isoDate = newDate.ToString("o");
+                isoDate = isoDate.Split("T")[0];
+                command.Parameters.AddWithValue("$date", isoDate);
+                command.Parameters.AddWithValue("$userId", userId);
+
+                int n = Convert.ToInt32(command.ExecuteScalar());
+                countAnswers += n;
+            }
+            this.connection.Close();
+
+            return countAnswers;
+        }
+
+        public List<Answer> GetPageSearch(string forSearch, int pageNumber, int pageSize)
+        {
+            if(pageNumber < 1)
+            {
+                throw new ArgumentOutOfRangeException(nameof(pageNumber));
+            }
+            List<Answer> list = new List<Answer>();
+
+            connection.Open();
+
+            SqliteCommand command = connection.CreateCommand();
+            command.CommandText = 
+            @"
+                SELECT * FROM answers
+                WHERE answerText LIKE '%' || $value || '%'
+                LIMIT $pageS OFFSET ($pageN-1)*$pageS;
+            ";
+            command.Parameters.AddWithValue("$value", forSearch);
+            command.Parameters.AddWithValue("$pageN", pageNumber);
+            command.Parameters.AddWithValue("$pageS", pageSize);
+
+            SqliteDataReader reader = command.ExecuteReader();
+
+            while (reader.Read())
+            {
+                Answer a = new Answer();
+                a.id = int.Parse(reader.GetString(0));
+                a.answerText = reader.GetString(1);
+                a.authorId = int.Parse(reader.GetString(2));
+                a.questionId = int.Parse(reader.GetString(3));
+                a.createdAt = DateTime.Parse(reader.GetString(4));
+                list.Add(a);
+            }
+            reader.Close();
+
+            connection.Close();
+            return list;
+        }
+
+        public long GetTotalPagesSearch(string forSearch, int pageSize)
+        {
+            connection.Open();
+
+            SqliteCommand command = connection.CreateCommand();
+            command.CommandText = 
+            @"
+                SELECT COUNT(*) FROM answers
+                WHERE answerText LIKE '%' || $value || '%';
+            ";
+            command.Parameters.AddWithValue("$value", forSearch);
+            long numOfRows = (long)command.ExecuteScalar();
+
+            connection.Close();
+
+            long pages = 0;
+            if(numOfRows%pageSize != 0)
+            {
+                pages = numOfRows/pageSize + 1;
+            }
+            else
+            {
+                pages = numOfRows/pageSize;
+            }
+            return pages;
+        }
+
         public bool AnswerExists(long answerId)
         {
             this.connection.Open();
@@ -63,12 +159,15 @@ namespace ConsoleProject
 
             if(reader.Read())
             {
-                Answer answer = new Answer();
-                answer.id = long.Parse(reader.GetString(0));
-                answer.answerText = reader.GetString(1);
+                Answer a = new Answer();
+                a.id = int.Parse(reader.GetString(0));
+                a.answerText = reader.GetString(1);
+                a.authorId = int.Parse(reader.GetString(2));
+                a.questionId = int.Parse(reader.GetString(3));
+                a.createdAt = DateTime.Parse(reader.GetString(4));
 
                 this.connection.Close();
-                return answer;
+                return a;
             }
             else
             {

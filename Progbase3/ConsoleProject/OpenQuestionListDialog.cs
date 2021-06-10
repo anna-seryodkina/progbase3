@@ -13,6 +13,10 @@ namespace ConsoleProject
         private Button prevPageBtn;
         private Button nextPageBtn;
         private Label emptyLabel;
+        private TextField searchInput;
+        private Button searchButton;
+        private bool onSearchMode;
+        private string forSearch;
 
         private int pageSize = 5;
         private int pageNum = 1;
@@ -63,15 +67,43 @@ namespace ConsoleProject
             frameView.Add(allQuestionsListView);
             this.Add(frameView);
 
-            Button createNewUserBtn = new Button(2, 16, "create new question");
-            createNewUserBtn.Clicked += OnCreateButtonClicked;
-            this.Add(createNewUserBtn);
-
             emptyLabel = new Label("Database is empty")
             {
                 X = 4, Y = 14, Visible = false,
             };
             this.Add(emptyLabel);
+
+            Button createNewUserBtn = new Button(2, 16, "create new question");
+            createNewUserBtn.Clicked += OnCreateButtonClicked;
+            this.Add(createNewUserBtn);
+
+            searchInput = new TextField("")
+            {
+                X = 2, Y = 18, Width = 40,
+            };
+
+            searchButton = new Button("Search")
+            {
+                X = Pos.Right(searchInput) + 2,
+                Y = Pos.Top(searchInput),
+            };
+            searchButton.Clicked += OnSearch;
+            this.Add(searchInput, searchButton);
+        }
+
+        private void OnSearch()
+        {
+            forSearch = searchInput.Text.ToString();
+            if(forSearch == "")
+            {
+                onSearchMode = false;
+                this.UpdateCurrentPage();
+                return;
+            }
+
+            this.onSearchMode = true;
+
+            this.allQuestionsListView.SetSource(questionRepo.GetPageSearch(forSearch, pageNum, pageSize));
         }
 
         public void SetRepository(QuestionRepository repo)
@@ -82,7 +114,16 @@ namespace ConsoleProject
 
         private void UpdateCurrentPage()
         {
-            int totalPages = (int)questionRepo.GetTotalPages(pageSize);
+            int totalPages = 0;
+            if(onSearchMode)
+            {
+                totalPages = (int)questionRepo.GetTotalPagesSearch(forSearch, pageSize);
+            }
+            else
+            {
+                totalPages = (int)questionRepo.GetTotalPages(pageSize);
+            }
+            
             if(pageNum > totalPages && pageNum > 1)
             {
                 pageNum = totalPages;
@@ -104,7 +145,14 @@ namespace ConsoleProject
             }
             this.totalPagesLbl.Text = totalPages.ToString();
 
-            this.allQuestionsListView.SetSource(questionRepo.GetPage(this.pageNum, this.pageSize));
+            if(onSearchMode)
+            {
+                this.allQuestionsListView.SetSource(questionRepo.GetPageSearch(forSearch, pageNum, pageSize));
+            }
+            else
+            {
+                this.allQuestionsListView.SetSource(questionRepo.GetPage(this.pageNum, this.pageSize));
+            }
 
             prevPageBtn.Visible = (pageNum != 1);
             nextPageBtn.Visible = (pageNum != totalPages );
@@ -167,8 +215,16 @@ namespace ConsoleProject
 
         private void OnNextPageButton()
         {
-            int pages = (int)questionRepo.GetTotalPages(pageSize);
-            if(pageNum >= pages)
+            int totalPages = 0;
+            if(onSearchMode)
+            {
+                totalPages = (int)questionRepo.GetTotalPagesSearch(forSearch, pageSize);
+            }
+            else
+            {
+                totalPages = (int)questionRepo.GetTotalPages(pageSize);
+            }
+            if(pageNum >= totalPages)
             {
                 return;
             }

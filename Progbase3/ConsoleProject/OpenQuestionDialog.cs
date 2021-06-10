@@ -6,7 +6,7 @@ public class OpenQuestionDialog : Dialog
 {
     public bool deletedQ;
     public bool updatedQ;
-    protected TextField questionTextInput;
+    protected TextView questionTextInput;
 
     protected Question question;
 
@@ -36,9 +36,9 @@ public class OpenQuestionDialog : Dialog
         int rightColumnX = 20;
 
         Label questionTextLbl = new Label(2, 2, "Question:");
-        questionTextInput = new TextField("")
+        questionTextInput = new TextView()
         {
-            X = rightColumnX, Y = Pos.Top(questionTextLbl), Width = 40,
+            X = rightColumnX, Y = Pos.Top(questionTextLbl), Width = 40, Height = 40,
             ReadOnly = true,
         };
         this.Add(questionTextLbl, questionTextInput);

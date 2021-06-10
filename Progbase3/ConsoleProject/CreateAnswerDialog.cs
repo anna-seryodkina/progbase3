@@ -6,7 +6,7 @@ public class CreateAnswerDialog : Dialog
 {
     public bool canceledA;
 
-    protected TextField answerTextInput;
+    protected TextView answerTextInput;
 
 
     public CreateAnswerDialog()
@@ -32,9 +32,10 @@ public class CreateAnswerDialog : Dialog
         int rightColumnX = 20;
 
         Label answerTextLbl = new Label(2, 2, "Answer:");
-        answerTextInput = new TextField("")
+        answerTextInput = new TextView()
         {
             X = rightColumnX, Y = Pos.Top(answerTextLbl), Width = 40,
+            Height = 40,
         };
         this.Add(answerTextLbl, answerTextInput);
 

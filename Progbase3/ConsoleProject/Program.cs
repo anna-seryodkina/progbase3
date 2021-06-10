@@ -34,7 +34,7 @@ namespace ConsoleProject
             GetQuestions("../../data/generator/questions");
             GetFullnames("../../data/generator/fullnames");
             GetLogins("../../data/generator/logins");
-            //
+            
             while(true)
             {
                 Console.WriteLine("> generate data? [yes|no]");
@@ -57,11 +57,14 @@ namespace ConsoleProject
 
 
             // ----------------- FOR TESTS -----------------
-            string dir = "./../../data/zip";
-            User user = userRepository.GetExportData(1);
-            Im_Ex_port ex = new Im_Ex_port();
-            ex.Export(user, dir);
+            // string dir = "./../../data/zip";
+            // User user = userRepository.GetExportData(1);
+            // Im_Ex_port ex = new Im_Ex_port();
+            // ex.Export(user, dir);
             // ---------------------------------------------
+            DateTime from = DateTime.Parse("2010/09/01");
+            DateTime to = DateTime.Parse("2011/05/25");
+            userRepository.GetGraph(2, from, to);
 
 
             // Application.Init();
@@ -73,8 +76,9 @@ namespace ConsoleProject
 
             // MenuBar menu = new MenuBar(new MenuBarItem[] {
             //     new MenuBarItem ("_File", new MenuItem [] {
-            //         new MenuItem("_New", "", OnQuit),
-            //         new MenuItem ("_Quit", "", OnQuit)
+            //         new MenuItem("_Import...", "", OnQuit),
+            //         new MenuItem ("_Export...", "", OnQuit),
+            //         new MenuItem ("_Exit", OnQuit)
             //     }),
             //     new MenuBarItem ("_Help", new MenuItem [] {
             //         new MenuItem("_About", "", OnAbout)
@@ -84,6 +88,18 @@ namespace ConsoleProject
             // top.Add(menu);
 
             // Application.Run();
+        }
+
+        public static DateTime GenerateDate(DateTime startDate, DateTime endDate)
+        {
+            var rand = new Random();
+            var dateInterval = endDate - startDate;
+            var hours = rand.Next(0, 24);
+            var minutes = rand.Next(0, 60);
+            var seconds = rand.Next(0, 60);
+            var value = rand.Next(dateInterval.Days);
+            var dt = startDate.AddDays(value).AddHours(hours).AddMinutes(minutes).AddSeconds(seconds);
+            return dt;
         }
 
         static void OnAbout()
@@ -201,6 +217,7 @@ namespace ConsoleProject
                 List<int> qIDs = questionRepository.GetQuestionIdList();
                 int index = random.Next(0, qIDs.Count);
                 answer.questionId = qIDs[index];
+                answer.createdAt = GenerateDate(DateTime.Parse("2010/09/01"), DateTime.Parse("2011/05/25"));
                 answers.Add(answer);
             }
             return answers;
@@ -304,6 +321,7 @@ namespace ConsoleProject
                 List<int> ids = userRepository.GetIdList();
                 int randomIndex = random.Next(0, ids.Count);
                 question.authorId = ids[randomIndex];
+                question.createdAt = GenerateDate(DateTime.Parse("2010/09/01"), DateTime.Parse("2011/05/25"));
                 // random helpfulAnswerId ???
                 questions.Add(question);
             }

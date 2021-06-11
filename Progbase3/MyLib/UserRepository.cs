@@ -4,7 +4,7 @@ using static System.Globalization.CultureInfo;
 using Microsoft.Data.Sqlite;
 using ScottPlot;
 
-namespace ConsoleProject
+namespace MyLib
 {
     public class UserRepository
     {
@@ -43,43 +43,21 @@ namespace ConsoleProject
 
         public static DateTime GenerateDate(DateTime startDate, DateTime endDate)
         {
-            var rand = new Random();
-            var dateInterval = endDate - startDate;
-            var hours = rand.Next(0, 24);
-            var minutes = rand.Next(0, 60);
-            var seconds = rand.Next(0, 60);
-            var value = rand.Next(dateInterval.Days);
-            var dt = startDate.AddDays(value).AddHours(hours).AddMinutes(minutes).AddSeconds(seconds);
-            return dt;
+            Random random = new Random();
+            TimeSpan dateInterval = endDate - startDate;
+            int hours = random.Next(0, 24);
+            int minutes = random.Next(0, 60);
+            int seconds = random.Next(0, 60);
+            int value = random.Next(dateInterval.Days);
+            DateTime datetime = startDate.AddDays(value).AddHours(hours).AddMinutes(minutes).AddSeconds(seconds);
+            return datetime;
         }
 
-        public void GetGraph(long userId, DateTime fromDate, DateTime toDate) // userId or User user ?
+        public void GetGraph(long userId, DateTime fromDate, DateTime toDate)
         {
-            // int totalMonths = toDate.Month - fromDate.Month;
-
-            // QuestionRepository qRepo = new QuestionRepository(connection);
-            // List<DateTime> dateTimes = qRepo.GetQuestionDatetimes(userId, fromDate, toDate);
-
-            // double[] positions = new double[10];
-            string[] labels = new string[10]; // names of the months
+            string[] labels = new string[10];
             double[] values = new double[10];
             int index = 0;
-
-            // for(int i = fromDate.Month; i < toDate.Month; i++)
-            // {
-            //     int h = 0; // num of questions in 1 month
-            //     foreach(DateTime dateTime in dateTimes)
-            //     {
-            //         if(dateTime.Month == i)
-            //         {
-            //             h++;
-            //         }
-            //     }
-            //     values[index] = h;
-            //     positions[index] = index;
-            //     index++;
-            // }
-
 
             HashSet<DateTime> rrrrrr = GetMonths(fromDate, toDate);
             foreach (DateTime date in rrrrrr)
@@ -93,13 +71,13 @@ namespace ConsoleProject
             }
 
             ScottPlot.Plot plt = new ScottPlot.Plot(600, 400);
-            //
+
             var bar = plt.AddBar(values);
             bar.Orientation = Orientation.Vertical;
             plt.Grid(lineStyle: LineStyle.Dot);
             plt.XTicks(labels);
             plt.SetAxisLimits(yMin: 0);
-            //
+
             string path = "./F.png";
             plt.SaveFig(path); 
         }

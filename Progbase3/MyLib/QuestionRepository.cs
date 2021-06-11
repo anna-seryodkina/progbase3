@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.Data.Sqlite;
 
-namespace ConsoleProject
+namespace MyLib
 {
     public class QuestionRepository
     {
@@ -10,36 +10,6 @@ namespace ConsoleProject
         public QuestionRepository(SqliteConnection connection)
         {
             this.connection = connection;
-        }
-
-        public List<DateTime> GetQuestionDatetimes(long userId, DateTime fromDate, DateTime toDate)
-        {
-            this.connection.Open();
-
-            SqliteCommand command = connection.CreateCommand();
-            command.CommandText = 
-            @"
-                SELECT createdAt FROM questions
-                WHERE createdAt >= $fromDate
-                and createdAt <= $toDate
-                and authorId = $userId
-            ";
-            command.Parameters.AddWithValue("$fromDate", fromDate);
-            command.Parameters.AddWithValue("$toDate", toDate);
-            command.Parameters.AddWithValue("$userId", userId);
-
-            SqliteDataReader reader = command.ExecuteReader();
-            List<DateTime> dates = new List<DateTime>();
-
-            while (reader.Read())
-            {
-                dates.Add(DateTime.Parse(reader.GetString(0)));
-            }
-            reader.Close();
-
-            this.connection.Close();
-
-            return dates;
         }
 
         public int CountQuestions(long userId, DateTime date)
@@ -52,12 +22,6 @@ namespace ConsoleProject
             for(int i = 1; i <= daysInMonth; i++)
             {
                 SqliteCommand command = connection.CreateCommand();
-                // command.CommandText = 
-                // @"
-                //     SELECT COUNT(*) From questions
-                //     WHERE authorId = $userId
-                //     AND createdAt = $date
-                // ";
                 command.CommandText = 
                 @"
                     SELECT COUNT(*) From questions
@@ -182,7 +146,6 @@ namespace ConsoleProject
 
             return result;
         }
-
 
         public List<Question> GetAllQuestionsByUserId(long userId)
         {

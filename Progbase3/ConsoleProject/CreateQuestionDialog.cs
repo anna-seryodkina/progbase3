@@ -1,6 +1,6 @@
 using Terminal.Gui;
 using System;
-using ConsoleProject;
+using MyLib;
 
 public class CreateQuestionDialog : Dialog
 {

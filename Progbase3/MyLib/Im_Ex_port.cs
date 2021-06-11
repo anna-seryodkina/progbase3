@@ -5,7 +5,7 @@ using System.IO.Compression;
 using System.Xml.Serialization;
 using Microsoft.Data.Sqlite;
 
-namespace ConsoleProject
+namespace MyLib
 {
     public class Root<T>
     {
@@ -19,6 +19,10 @@ namespace ConsoleProject
         public string filenameQuestion = "questions.xml";
         public string filenameQuestionAnswers = "questions_answers.xml";
 
+        public Im_Ex_port(SqliteConnection connection)
+        {
+            this.connection = connection;
+        }
 
         public void Import(string path)
         {
@@ -35,7 +39,6 @@ namespace ConsoleProject
             List<Question> questions = questionRoot.root;
             List<Answer> answers = answersListQRoot.root;
 
-            //
             foreach(Answer answer in answers)
             {
                 if(!answerRepository.AnswerExists(answer.id))
@@ -87,9 +90,13 @@ namespace ConsoleProject
 
             // archive
             string startPath = @exportDirectoryName;
-            string zipPath = @exportDirectoryName + ".zip";
+            string zipPath = @exportDirectoryName + "/archive.zip";
 
             ZipFile.CreateFromDirectory(startPath, zipPath);
+
+            File.Delete(usersAnswersPath);
+            File.Delete(questionsPath);
+            File.Delete(questionAnswersPath);
         }
 
         private void Serialize<T>(string filename, Root<T> root)

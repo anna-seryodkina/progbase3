@@ -1,4 +1,4 @@
-namespace ConsoleProject
+namespace MyLib
 {
     public class Answer
     {

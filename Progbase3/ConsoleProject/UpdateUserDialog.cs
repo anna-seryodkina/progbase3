@@ -1,4 +1,4 @@
-using ConsoleProject;
+using MyLib;
 
 public class UpdateUserDialog : CreateUserDialog
 {

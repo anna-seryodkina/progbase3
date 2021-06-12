@@ -180,13 +180,32 @@ namespace MyLib
             return pages;
         }
 
-        public bool UserExists(string username)
+        public bool SetPassword(string password, long userId)
+        {
+            connection.Open();
+ 
+            SqliteCommand command = connection.CreateCommand();
+            command.CommandText = 
+            @"
+                UPDATE users SET password = $password WHERE id = $id
+            ";
+            command.Parameters.AddWithValue("$password", password);
+            command.Parameters.AddWithValue("$id", userId);
+
+            int nChanged = command.ExecuteNonQuery();
+
+            connection.Close();
+
+            return nChanged == 1;
+        }
+
+        public bool UserExists(string login)
         {
             this.connection.Open();
 
             SqliteCommand command = connection.CreateCommand();
-            command.CommandText = @"SELECT * FROM users WHERE username = $username";
-            command.Parameters.AddWithValue("$username", username);
+            command.CommandText = @"SELECT * FROM users WHERE login = $login";
+            command.Parameters.AddWithValue("$login", login);
 
             SqliteDataReader reader = command.ExecuteReader();
 
@@ -225,13 +244,18 @@ namespace MyLib
             }
         }
 
-        public User GetByUsername(string username)
+        public User GetUserByLoginPassword(string login, string password)
         {
             this.connection.Open();
 
             SqliteCommand command = connection.CreateCommand();
-            command.CommandText = @"SELECT * FROM users WHERE username = $username";
-            command.Parameters.AddWithValue("$username", username);
+            command.CommandText = 
+            @"
+                SELECT * FROM users
+                WHERE login = $login AND password = $password;
+            ";
+            command.Parameters.AddWithValue("$login", login);
+            command.Parameters.AddWithValue("$password", password);
 
             SqliteDataReader reader = command.ExecuteReader();
 

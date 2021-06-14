@@ -38,7 +38,7 @@ public class OpenQuestionDialog : Dialog
         Label questionTextLbl = new Label(2, 2, "Question:");
         questionTextInput = new TextView()
         {
-            X = rightColumnX, Y = Pos.Top(questionTextLbl), Width = 40, Height = 40,
+            X = rightColumnX, Y = Pos.Top(questionTextLbl), Width = 40, Height = 15,
             ReadOnly = true,
         };
         this.Add(questionTextLbl, questionTextInput);

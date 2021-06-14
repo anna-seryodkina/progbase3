@@ -16,5 +16,19 @@ namespace MyLib
         {
             this.createdAt = System.DateTime.Now;
         }
+
+        public override string ToString()
+        {
+            string subString = "";
+            if(questionText.Length <= 12)
+            {
+                subString = questionText;
+            }
+            else
+            {
+                subString = questionText.Substring(0, 12) + "...";
+            }
+            return $"[{id}] {subString}";
+        }
     }
 }

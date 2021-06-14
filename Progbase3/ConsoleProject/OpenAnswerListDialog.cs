@@ -17,6 +17,7 @@ namespace ConsoleProject
         private TextField searchInput;
         private Button searchButton;
         private string forSearch;
+        private Button closeButton;
         private bool onSearchMode;
 
         private int pageSize = 5;
@@ -24,6 +25,10 @@ namespace ConsoleProject
         public OpenAnswerListDialog()
         {
             this.Title = "Answer list";
+
+            closeButton = new Button("Close");
+            closeButton.Clicked += OnCloseClicked;
+            this.AddButton(closeButton);
 
             prevPageBtn = new Button(2, 4, "Prev");
             prevPageBtn.Clicked += OnPrevPageButton;
@@ -90,6 +95,11 @@ namespace ConsoleProject
             };
             searchButton.Clicked += OnSearch;
             this.Add(searchInput, searchButton);
+        }
+
+        private void OnCloseClicked()
+        {
+            Application.RequestStop();
         }
 
         private void OnSearch()

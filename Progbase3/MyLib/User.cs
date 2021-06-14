@@ -17,5 +17,10 @@ namespace MyLib
         {
             this.createdAt = DateTime.Now;
         }
+
+        public override string ToString()
+        {
+            return $"[{id}] {fullname} | {createdAt}";
+        }
     }
 }

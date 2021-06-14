@@ -12,6 +12,8 @@ namespace ConsoleProject
         static AnswerRepository answerRepository;
         static QuestionRepository questionRepository;
         static TextField currentUserTextField;
+        static Button answerListButton;
+        static Button questionListButton;
         static User currentUser;
         static void Main(string[] args)
         {
@@ -88,9 +90,41 @@ namespace ConsoleProject
             }
             win.Add(currentUserTextField);
 
+            answerListButton = new Button("Answers")
+            {
+                X = Pos.Percent(50),
+                Y = Pos.Bottom(win) - 8,
+                Visible = false,
+            };
+            answerListButton.Clicked += OnAnswerListClicked;
+            win.Add(answerListButton);
+
+            questionListButton = new Button("Questions")
+            {
+                X = Pos.X(answerListButton),
+                Y = Pos.Y(answerListButton) + 2,
+                Visible = false,
+            };
+            questionListButton.Clicked += OnQuestionListClicked;
+            win.Add(questionListButton);
+
 
             top.Add(menu, win);
             Application.Run();
+        }
+
+        static void OnQuestionListClicked()
+        {
+            OpenQuestionListDialog dialog = new OpenQuestionListDialog();
+            dialog.SetRepository(questionRepository);
+            Application.Run(dialog);
+        }
+
+        static void OnAnswerListClicked()
+        {
+            OpenAnswerListDialog dialog = new OpenAnswerListDialog();
+            dialog.SetRepository(answerRepository);
+            Application.Run(dialog);
         }
 
         static void OnRegistration()
@@ -140,7 +174,13 @@ namespace ConsoleProject
             {
                 currentUser = user;
                 currentUserTextField.Text = currentUser.fullname;
+                answerListButton.Visible = true;
+                questionListButton.Visible = true;
             }
+
+            // if (currentUser.id == ...authorId) // користувач є автором питання/відповіді
+            // { може створювати видаляти редагувати те що належить йому }
+            // if (currentUser.isModerator) { може видаляти будь які питання та відповіді }
         }
 
         static void OnGraph()

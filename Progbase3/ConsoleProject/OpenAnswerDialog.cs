@@ -39,7 +39,7 @@ public class OpenAnswerDialog : Dialog
         answerTextInput = new TextView()
         {
             X = rightColumnX, Y = Pos.Top(answerTextLbl), Width = 40,
-            Height = 40, ReadOnly = true,
+            Height = 15, ReadOnly = true,
         };
         this.Add(answerTextLbl, answerTextInput);
     }

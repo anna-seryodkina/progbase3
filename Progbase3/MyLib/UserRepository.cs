@@ -63,7 +63,7 @@ namespace MyLib
             foreach (DateTime date in rrrrrr)
             {
                 values[index] = CountValue(date, userId);
-                labels[index] = CurrentCulture.DateTimeFormat.GetAbbreviatedMonthName(date.Month) + " | ";
+                labels[index] = CurrentCulture.DateTimeFormat.GetAbbreviatedMonthName(date.Month) + ".";
                 labels[index] += date.Year.ToString();
                 // positions[index] = index+1;
 
@@ -112,72 +112,6 @@ namespace MyLib
 
             connection.Close();
             return newId;
-        }
-
-        public List<User> GetPageSearch(string forSearch, int pageNumber, int pageSize)
-        {
-            if(pageNumber < 1)
-            {
-                throw new ArgumentOutOfRangeException(nameof(pageNumber));
-            }
-            List<User> list = new List<User>();
-
-            connection.Open();
-
-            SqliteCommand command = connection.CreateCommand();
-            command.CommandText = 
-            @"
-                SELECT * FROM users
-                WHERE fullname LIKE '%' || $value || '%'
-                LIMIT $pageS OFFSET ($pageN-1)*$pageS;
-            ";
-            command.Parameters.AddWithValue("$value", forSearch);
-            command.Parameters.AddWithValue("$pageN", pageNumber);
-            command.Parameters.AddWithValue("$pageS", pageSize);
-
-            SqliteDataReader reader = command.ExecuteReader();
-
-            while (reader.Read())
-            {
-                User user = new User();
-                user.id = int.Parse(reader.GetString(0));
-                user.login = reader.GetString(1);
-                user.fullname = reader.GetString(2);
-                user.isModerator = reader.GetString(3) != "0";
-                user.createdAt = DateTime.Parse(reader.GetString(4));
-                list.Add(user);
-            }
-            reader.Close();
-
-            connection.Close();
-            return list;
-        }
-
-        public long GetTotalPagesSearch(string forSearch, int pageSize)
-        {
-            connection.Open();
-
-            SqliteCommand command = connection.CreateCommand();
-            command.CommandText = 
-            @"
-                SELECT COUNT(*) FROM users
-                WHERE fullname LIKE '%' || $value || '%';
-            ";
-            command.Parameters.AddWithValue("$value", forSearch);
-            long numOfRows = (long)command.ExecuteScalar();
-
-            connection.Close();
-
-            long pages = 0;
-            if(numOfRows%pageSize != 0)
-            {
-                pages = numOfRows/pageSize + 1;
-            }
-            else
-            {
-                pages = numOfRows/pageSize;
-            }
-            return pages;
         }
 
         public bool SetPassword(string password, long userId)
@@ -278,11 +212,6 @@ namespace MyLib
             }
         }
 
-        public bool Update(long userId, User user)
-        {
-            throw new NotImplementedException();
-        }
-
         public User GetExportData(long userId)
         {
             QuestionRepository qRepo = new QuestionRepository(connection);
@@ -296,27 +225,6 @@ namespace MyLib
             }
             user.answers = aRepo.GetAllAnswersByUserId(userId);
             return user;
-        }
-
-        public bool DeleteUser(long userID)
-        {
-            this.connection.Open();
- 
-            SqliteCommand command = connection.CreateCommand();
-            command.CommandText = @"DELETE FROM users WHERE id = $id";
-            command.Parameters.AddWithValue("$id", userID);
-
-            int nChanged = command.ExecuteNonQuery();
-            this.connection.Close();
-
-            if (nChanged == 0)
-            {
-                return false;
-            }
-            else 
-            {
-                return true;
-            }
         }
 
         public List<int> GetIdList()
@@ -337,68 +245,6 @@ namespace MyLib
 
             this.connection.Close();
 
-            return list;
-        }
-
-        public long GetTotalPages(int pageSize)
-        {
-            connection.Open();
-
-            SqliteCommand command = connection.CreateCommand();
-            command.CommandText = 
-            @"
-                SELECT COUNT(*) FROM users;
-            ";
-            long numOfRows = (long)command.ExecuteScalar();
-
-            connection.Close();
-
-            long pages = 0;
-            if(numOfRows%pageSize != 0)
-            {
-                pages = numOfRows/pageSize + 1;
-            }
-            else
-            {
-                pages = numOfRows/pageSize;
-            }
-            return pages;
-        }
-
-        public List<User> GetPage(int pageNumber, int pageSize)
-        {
-            if(pageNumber < 1)
-            {
-                throw new ArgumentOutOfRangeException(nameof(pageNumber));
-            }
-            List<User> list = new List<User>();
-
-            connection.Open();
-
-            SqliteCommand command = connection.CreateCommand();
-            command.CommandText = 
-            @"
-                SELECT * FROM users LIMIT $pageS OFFSET ($pageN-1)*$pageS;
-            ";
-            command.Parameters.AddWithValue("$pageN", pageNumber);
-            command.Parameters.AddWithValue("$pageS", pageSize);
-
-            SqliteDataReader reader = command.ExecuteReader();
-
-            while (reader.Read())
-            {
-                User user = new User();
-
-                user.id = int.Parse(reader.GetString(0));
-                user.login = reader.GetString(1);
-                user.fullname = reader.GetString(2);
-                user.isModerator = reader.GetString(3) != "0";
-                user.createdAt = DateTime.Parse(reader.GetString(4));
-                list.Add(user);
-            }
-            reader.Close();
-
-            connection.Close();
             return list;
         }
     }

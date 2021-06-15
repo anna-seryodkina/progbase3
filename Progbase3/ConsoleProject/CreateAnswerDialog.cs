@@ -11,7 +11,7 @@ public class CreateAnswerDialog : Dialog
 
     public CreateAnswerDialog()
     {
-        this.Title = "create new activity";
+        this.Title = "create new answer";
         this.Width = Dim.Percent(80);
         this.Height = Dim.Percent(80);
 
@@ -35,7 +35,7 @@ public class CreateAnswerDialog : Dialog
         answerTextInput = new TextView()
         {
             X = rightColumnX, Y = Pos.Top(answerTextLbl), Width = 40,
-            Height = 40,
+            Height = 15,
         };
         this.Add(answerTextLbl, answerTextInput);
 
@@ -59,8 +59,5 @@ public class CreateAnswerDialog : Dialog
     {
         this.canceledA = false;
         Application.RequestStop();
-        // OpenActivityDialog dialog = new OpenActivityDialog();
-        // dialog.SetActivity(GetActivity());
-        // Application.Run(dialog);
     }
 }

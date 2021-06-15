@@ -48,7 +48,7 @@ namespace ConsoleProject
                 Height = Dim.Fill() - 1,
             };
 
-            Button registrationButton = new Button("Sign In")
+            Button registrationButton = new Button("Sign Up")
             {
                 X = 2,
                 Y = 4,
@@ -67,8 +67,8 @@ namespace ConsoleProject
 
             Label currentUserLabel = new Label("Current user: ")
             {
-                X = Pos.Right(registrationButton),
-                Y = Pos.Top(registrationButton) + 4,
+                X = Pos.X(registrationButton),
+                Y = Pos.Y(registrationButton) + 4,
             };
             win.Add(currentUserLabel);
 
@@ -76,8 +76,7 @@ namespace ConsoleProject
             {
                 X = Pos.Right(currentUserLabel) + 2,
                 Y = Pos.Top(currentUserLabel),
-                Width = 15,
-                Height = 30,
+                Width = 25,
                 ReadOnly = true,
             };
             if(currentUser == null)
@@ -92,7 +91,7 @@ namespace ConsoleProject
 
             answerListButton = new Button("Answers")
             {
-                X = Pos.Percent(50),
+                X = Pos.Percent(45),
                 Y = Pos.Bottom(win) - 8,
                 Visible = false,
             };
@@ -148,7 +147,7 @@ namespace ConsoleProject
             }
             else
             {
-                // user already exists
+                MessageBox.ErrorQuery("oops", "User already exists. Log in.", "OK");
             }
         }
 
@@ -168,7 +167,7 @@ namespace ConsoleProject
             User user = authentication.Login(login, password);
             if(user == null)
             {
-                // no such user
+                MessageBox.ErrorQuery("oops", "No such user. Sign up first.", "OK");
             }
             else
             {
@@ -185,30 +184,50 @@ namespace ConsoleProject
 
         static void OnGraph()
         {
-            // dialog
-            long userId = currentUser.id;
-            DateTime from = new DateTime(); // get from dialog
-            DateTime to = new DateTime(); // get from dialog
-            userRepository.GetGraph(userId, from, to);
+            if(currentUser == null)
+            {
+                MessageBox.ErrorQuery("oops", "Log in please!", "OK");
+                return;
+            }
+            GraphDialog dialog = new GraphDialog();
+            Application.Run(dialog);
+
+            if(!dialog.canceled)
+            {
+                long userId = currentUser.id;
+                DateTime from = DateTime.Parse(dialog.fromDateField.Text.ToString());
+                DateTime to = DateTime.Parse(dialog.toDateField.Text.ToString());
+                userRepository.GetGraph(userId, from, to);
+            }
         }
 
         static void OnExport()
         {
+            if(currentUser == null)
+            {
+                MessageBox.ErrorQuery("oops", "Log in please!", "OK");
+                return;
+            }
             ExportDialog dialog = new ExportDialog();
             Application.Run(dialog);
             string dir = "";
             if(!dialog.Canceled)
             {
                 dir = dialog.FilePath.ToString();
+                long userId = currentUser.id;
+                User user = userRepository.GetExportData(userId);
+                Im_Ex_port exporter = new Im_Ex_port(connection);
+                exporter.Export(user, dir);
             }
-            long userId = currentUser.id;
-            User user = userRepository.GetExportData(userId);
-            Im_Ex_port exporter = new Im_Ex_port(connection);
-            exporter.Export(user, dir);
         }
 
         static void OnImport()
         {
+            if(currentUser == null)
+            {
+                MessageBox.ErrorQuery("oops", "Log in please!", "OK");
+                return;
+            }
             ImportDialog dialog = new ImportDialog();
             Application.Run(dialog);
 
@@ -216,10 +235,9 @@ namespace ConsoleProject
             if(!dialog.Canceled)
             {
                 path = dialog.FilePath.ToString();
+                Im_Ex_port importer = new Im_Ex_port(connection);
+                importer.Import(path);
             }
-
-            Im_Ex_port importer = new Im_Ex_port(connection);
-            importer.Import(path);
         }
 
         static void OnAbout()

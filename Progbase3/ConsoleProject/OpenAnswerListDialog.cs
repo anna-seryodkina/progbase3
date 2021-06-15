@@ -7,7 +7,6 @@ namespace ConsoleProject
     public class OpenAnswerListDialog : Dialog
     {
         private ListView allAnswersListView;
-
         private AnswerRepository answerRepo;
         private Label totalPagesLbl;
         private Label pageLbl;
@@ -73,13 +72,13 @@ namespace ConsoleProject
             frameView.Add(allAnswersListView);
             this.Add(frameView);
 
-            emptyLabel = new Label("Database is empty")
+            emptyLabel = new Label("Database is empty") 
             {
                 X = 4, Y = 14, Visible = false,
             };
             this.Add(emptyLabel);
 
-            Button createNewUserBtn = new Button(2, 16, "create new question");
+            Button createNewUserBtn = new Button(2, 16, "create new answer");
             createNewUserBtn.Clicked += OnCreateButtonClicked;
             this.Add(createNewUserBtn);
 

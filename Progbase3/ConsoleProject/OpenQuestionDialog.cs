@@ -17,13 +17,13 @@ public class OpenQuestionDialog : Dialog
         this.Width = Dim.Percent(80);
         this.Height = Dim.Percent(80);
 
-        Button updateBtn = new Button(2, 15, "Update");
+        Button updateBtn = new Button(2, 16, "Update");
         updateBtn.Clicked += OnUpdateQuestion;
 
         Button deleteBtn = new Button("Delete")
         {
-            X = Pos.Right(updateBtn) + 2,
-            Y = Pos.Top(updateBtn),
+            X = 2,
+            Y = Pos.Top(updateBtn) + 2,
         };
         deleteBtn.Clicked += OnDeleteQuestion;
         this.Add(updateBtn, deleteBtn);

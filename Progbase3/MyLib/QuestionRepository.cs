@@ -173,7 +173,7 @@ namespace MyLib
             return qList;
         }
 
-        public bool Update(long questionId, Question question) // доробити !
+        public bool Update(long questionId, Question question)
         {
             connection.Open();
 

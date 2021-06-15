@@ -7,15 +7,18 @@ public class OpenAnswerDialog : Dialog
     public bool deletedA;
     public bool updatedA;
     protected TextView answerTextInput;
+    private User currentUser;
 
     protected Answer answer;
 
 
-    public OpenAnswerDialog()
+    public OpenAnswerDialog(User currentUser)
     {
         this.Title = "open answer";
         this.Width = Dim.Percent(80);
         this.Height = Dim.Percent(80);
+
+        this.currentUser = currentUser;
 
         Button updateBtn = new Button(2, 16, "Update");
         updateBtn.Clicked += OnUpdateAnswer;
@@ -62,6 +65,11 @@ public class OpenAnswerDialog : Dialog
 
     private void OnUpdateAnswer()
     {
+        if(!currentUser.isModerator && currentUser.id != answer.authorId)
+        {
+            MessageBox.ErrorQuery("oops", "access denied.", "OK");
+            return;
+        }
         UpdateAnswerDialog dialog = new UpdateAnswerDialog();
         dialog.SetAnswer(this.answer);
 
@@ -77,6 +85,11 @@ public class OpenAnswerDialog : Dialog
 
     private void OnDeleteAnswer()
     {
+        if(!currentUser.isModerator && currentUser.id != answer.authorId)
+        {
+            MessageBox.ErrorQuery("oops", "access denied.", "OK");
+            return;
+        }
         int index = MessageBox.Query("Delete question", "Are you sure?", "No", "Yes");
         if(index == 1)
         {

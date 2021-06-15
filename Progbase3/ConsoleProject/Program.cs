@@ -14,6 +14,8 @@ namespace ConsoleProject
         static TextField currentUserTextField;
         static Button answerListButton;
         static Button questionListButton;
+        static Button createButtonQ;
+        static Button createButtonA;
         static User currentUser;
         static void Main(string[] args)
         {
@@ -108,20 +110,65 @@ namespace ConsoleProject
             win.Add(questionListButton);
 
 
+            createButtonA = new Button("Create Answer")
+            {
+                X = Pos.Right(answerListButton) + 4,
+                Y = Pos.Y(answerListButton),
+                Visible = false,
+            };
+            createButtonA.Clicked += OnCreateA;
+            win.Add(createButtonA);
+
+
+            createButtonQ = new Button("Create Question")
+            {
+                X = Pos.X(createButtonA),
+                Y = Pos.Y(createButtonA) + 2,
+                Visible = false,
+            };
+            createButtonQ.Clicked += OnCreateQ;
+            win.Add(createButtonQ);
+
+
             top.Add(menu, win);
             Application.Run();
         }
 
+        static void OnCreateA ()
+        {
+            CreateAnswerDialog dialog = new CreateAnswerDialog();
+            Application.Run(dialog);
+            if(!dialog.canceledA)
+            {
+                Answer answer = dialog.GetAnswer();
+                answer.authorId = currentUser.id;
+                answerRepository.Insert(answer);
+            }
+            
+        }
+
+        static void OnCreateQ ()
+        {
+            CreateQuestionDialog dialog = new CreateQuestionDialog();
+            Application.Run(dialog);
+            if(!dialog.canceledQ)
+            {
+                Question question = dialog.GetQuestion();
+                question.authorId = currentUser.id;
+                questionRepository.Insert(question);
+            }
+        }
+
         static void OnQuestionListClicked()
         {
-            OpenQuestionListDialog dialog = new OpenQuestionListDialog();
+            OpenQuestionListDialog dialog = new OpenQuestionListDialog(currentUser);
             dialog.SetRepository(questionRepository);
             Application.Run(dialog);
         }
 
         static void OnAnswerListClicked()
         {
-            OpenAnswerListDialog dialog = new OpenAnswerListDialog();
+            OpenAnswerListDialog dialog = new OpenAnswerListDialog(currentUser);
             dialog.SetRepository(answerRepository);
             Application.Run(dialog);
         }
@@ -175,6 +222,8 @@ namespace ConsoleProject
                 currentUserTextField.Text = currentUser.fullname;
                 answerListButton.Visible = true;
                 questionListButton.Visible = true;
+                createButtonA.Visible = true;
+                createButtonQ.Visible = true;
             }
 
             // if (currentUser.id == ...authorId) // користувач є автором питання/відповіді

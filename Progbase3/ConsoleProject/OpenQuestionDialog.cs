@@ -7,15 +7,24 @@ public class OpenQuestionDialog : Dialog
     public bool deletedQ;
     public bool updatedQ;
     protected TextView questionTextInput;
+    private User currentUser;
 
     protected Question question;
 
 
-    public OpenQuestionDialog()
+    public OpenQuestionDialog(User currentUser)
     {
         this.Title = "open question";
         this.Width = Dim.Percent(80);
         this.Height = Dim.Percent(80);
+
+        this.currentUser = currentUser;
+
+        if(!currentUser.isModerator && currentUser.id != question.authorId)
+        {
+            MessageBox.ErrorQuery("oops", "access denied.", "OK");
+            return;
+        }
 
         Button updateBtn = new Button(2, 16, "Update");
         updateBtn.Clicked += OnUpdateQuestion;

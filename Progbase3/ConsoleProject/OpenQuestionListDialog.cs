@@ -19,12 +19,14 @@ namespace ConsoleProject
         private Button closeButton;
         private bool onSearchMode;
         private string forSearch;
+        private User currentUser;
 
         private int pageSize = 5;
         private int pageNum = 1;
-        public OpenQuestionListDialog()
+        public OpenQuestionListDialog(User currentUser)
         {
             this.Title = "Question list";
+            this.currentUser = currentUser;
 
             closeButton = new Button("Close");
             closeButton.Clicked += OnCloseClicked;
@@ -172,7 +174,7 @@ namespace ConsoleProject
         private void OnOpenQuestion(ListViewItemEventArgs args)
         {
             Question value = (Question)args.Value;
-            OpenQuestionDialog dialog = new OpenQuestionDialog();
+            OpenQuestionDialog dialog = new OpenQuestionDialog(currentUser);
             dialog.SetQuestion(value);
 
             Application.Run(dialog);

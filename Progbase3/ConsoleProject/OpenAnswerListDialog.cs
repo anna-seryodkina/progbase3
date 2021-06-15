@@ -18,12 +18,14 @@ namespace ConsoleProject
         private string forSearch;
         private Button closeButton;
         private bool onSearchMode;
+        private User currentUser;
 
         private int pageSize = 5;
         private int pageNum = 1;
-        public OpenAnswerListDialog()
+        public OpenAnswerListDialog(User currentUser)
         {
             this.Title = "Answer list";
+            this.currentUser = currentUser;
 
             closeButton = new Button("Close");
             closeButton.Clicked += OnCloseClicked;
@@ -170,7 +172,7 @@ namespace ConsoleProject
         private void OnOpenAnswer(ListViewItemEventArgs args)
         {
             Answer value = (Answer)args.Value;
-            OpenAnswerDialog dialog = new OpenAnswerDialog();
+            OpenAnswerDialog dialog = new OpenAnswerDialog(currentUser);
             dialog.SetAnswer(value);
 
             Application.Run(dialog);

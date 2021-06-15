@@ -230,7 +230,23 @@ namespace MyLib
 
         public bool Update(long answerId, Answer answer)
         {
-            throw new NotImplementedException();
+            connection.Open();
+
+            SqliteCommand command = connection.CreateCommand();
+            command.CommandText = 
+            @"
+                UPDATE answers
+                SET answerText = $text
+                WHERE id = $id
+            ";
+            command.Parameters.AddWithValue("$id", answerId);
+            command.Parameters.AddWithValue("$text", answer.answerText);
+
+            int nChanged = command.ExecuteNonQuery();
+
+            connection.Close();
+
+            return nChanged == 1;
         }
 
         public bool Delete(long answerId)

@@ -7,6 +7,7 @@ public class CreateAnswerDialog : Dialog
     public bool canceledA;
 
     protected TextView answerTextInput;
+    protected TextField qId;
 
 
     public CreateAnswerDialog()
@@ -31,7 +32,14 @@ public class CreateAnswerDialog : Dialog
 
         int rightColumnX = 20;
 
-        Label answerTextLbl = new Label(2, 2, "Answer:");
+        Label label = new Label(2, 2, "Question id:");
+        qId = new TextField()
+        {
+            X = rightColumnX, Y = Pos.Top(label), Width = 40,
+        };
+        this.Add(label, qId);
+
+        Label answerTextLbl = new Label(2, 4, "Answer:");
         answerTextInput = new TextView()
         {
             X = rightColumnX, Y = Pos.Top(answerTextLbl), Width = 40,
@@ -46,6 +54,7 @@ public class CreateAnswerDialog : Dialog
         return new Answer()
         {
             answerText = answerTextInput.Text.ToString(),
+            questionId = int.Parse(qId.Text.ToString()),
         };
     }
 

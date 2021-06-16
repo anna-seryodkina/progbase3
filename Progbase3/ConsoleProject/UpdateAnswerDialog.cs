@@ -9,10 +9,8 @@ public class UpdateAnswerDialog : CreateAnswerDialog
 
     public void SetAnswer (Answer a)
     {
-        // this.activityTypeRadioGr.Text = a.type;
-        // this.activityNameInput.Text = a.name;
-        // this.commentTextView.Text = a.comment;
-        // this.distanceInput.Text = a.distance.ToString();
+        this.answerTextInput.Text = a.answerText;
+        this.qId.Text = a.questionId.ToString();
     }
 
 }

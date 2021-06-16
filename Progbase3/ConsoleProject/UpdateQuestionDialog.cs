@@ -9,10 +9,7 @@ public class UpdateQuestionDialog : CreateQuestionDialog
 
     public void SetQuestion (Question a)
     {
-        // this.activityTypeRadioGr.Text = a.type;
-        // this.activityNameInput.Text = a.name;
-        // this.commentTextView.Text = a.comment;
-        // this.distanceInput.Text = a.distance.ToString();
+        this.questionTextInput.Text = a.questionText;
     }
 
 }

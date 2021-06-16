@@ -225,10 +225,6 @@ namespace ConsoleProject
                 createButtonA.Visible = true;
                 createButtonQ.Visible = true;
             }
-
-            // if (currentUser.id == ...authorId) // користувач є автором питання/відповіді
-            // { може створювати видаляти редагувати те що належить йому }
-            // if (currentUser.isModerator) { може видаляти будь які питання та відповіді }
         }
 
         static void OnGraph()

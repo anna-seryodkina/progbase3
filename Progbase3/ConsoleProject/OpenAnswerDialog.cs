@@ -58,14 +58,14 @@ public class OpenAnswerDialog : Dialog
         return this.answer;
     }
 
-    private void OnBackA() // should return to main window !
+    private void OnBackA()
     {
         Application.RequestStop();
     }
 
     private void OnUpdateAnswer()
     {
-        if(!currentUser.isModerator && currentUser.id != answer.authorId)
+        if(currentUser.id != answer.authorId)
         {
             MessageBox.ErrorQuery("oops", "access denied.", "OK");
             return;

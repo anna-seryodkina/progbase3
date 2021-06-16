@@ -67,6 +67,14 @@ namespace ConsoleProject
             loginButton.Clicked += OnLogin;
             win.Add(loginButton);
 
+            Button logoutButton = new Button("Log Out")
+            {
+                X = Pos.Right(loginButton) + 2,
+                Y = Pos.Top(loginButton),
+            };
+            logoutButton.Clicked += OnLogOut;
+            win.Add(logoutButton);
+
             Label currentUserLabel = new Label("Current user: ")
             {
                 X = Pos.X(registrationButton),
@@ -81,14 +89,6 @@ namespace ConsoleProject
                 Width = 25,
                 ReadOnly = true,
             };
-            if(currentUser == null)
-            {
-                currentUserTextField.Text = "no one";
-            }
-            else
-            {
-                currentUserTextField.Text = currentUser.fullname;
-            }
             win.Add(currentUserTextField);
 
             answerListButton = new Button("Answers")
@@ -129,9 +129,38 @@ namespace ConsoleProject
             createButtonQ.Clicked += OnCreateQ;
             win.Add(createButtonQ);
 
+            UpdateCurrentUserText();
+
 
             top.Add(menu, win);
             Application.Run();
+        }
+
+        static void UpdateCurrentUserText ()
+        {
+            if(currentUser == null)
+            {
+                currentUserTextField.Text = "no one";
+                answerListButton.Visible = false;
+                questionListButton.Visible = false;
+                createButtonA.Visible = false;
+                createButtonQ.Visible = false;
+            }
+            else
+            {
+                currentUserTextField.Text = currentUser.fullname;
+                answerListButton.Visible = true;
+                questionListButton.Visible = true;
+                createButtonA.Visible = true;
+                createButtonQ.Visible = true;
+            }
+            Application.Refresh();
+        }
+
+        static void OnLogOut()
+        {
+            currentUser = null;
+            UpdateCurrentUserText();
         }
 
         static void OnCreateA ()
@@ -141,6 +170,11 @@ namespace ConsoleProject
             if(!dialog.canceledA)
             {
                 Answer answer = dialog.GetAnswer();
+                if(answer == null)
+                {
+                    MessageBox.ErrorQuery("oops", "can not create answer.", "OK");
+                    return;
+                }
                 answer.authorId = currentUser.id;
                 answerRepository.Insert(answer);
             }
@@ -219,11 +253,7 @@ namespace ConsoleProject
             else
             {
                 currentUser = user;
-                currentUserTextField.Text = currentUser.fullname;
-                answerListButton.Visible = true;
-                questionListButton.Visible = true;
-                createButtonA.Visible = true;
-                createButtonQ.Visible = true;
+                UpdateCurrentUserText();
             }
         }
 

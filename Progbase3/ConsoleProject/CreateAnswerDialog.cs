@@ -51,11 +51,17 @@ public class CreateAnswerDialog : Dialog
 
     public Answer GetAnswer()
     {
-        return new Answer()
+        Answer answer = new Answer();
+        try
         {
-            answerText = answerTextInput.Text.ToString(),
-            questionId = int.Parse(qId.Text.ToString()),
-        };
+            answer.answerText = answerTextInput.Text.ToString();
+            answer.questionId = int.Parse(qId.Text.ToString());
+        }
+        catch
+        {
+            MessageBox.ErrorQuery("oops", "incorrect data.", "OK");
+        }
+        return answer;
     }
 
     private void OnAnswerCancelled()

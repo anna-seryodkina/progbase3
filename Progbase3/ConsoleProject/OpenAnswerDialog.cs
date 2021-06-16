@@ -77,6 +77,11 @@ public class OpenAnswerDialog : Dialog
         if(!dialog.canceledA)
         {
             Answer updatedAnswer = dialog.GetAnswer();
+            if(updatedAnswer == null)
+            {
+                MessageBox.ErrorQuery("oops", "can not update answer.", "OK");
+                return;
+            }
             this.updatedA = true;
             this.SetAnswer(updatedAnswer);
             Application.RequestStop();

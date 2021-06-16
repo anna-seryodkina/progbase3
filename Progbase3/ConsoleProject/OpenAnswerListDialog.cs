@@ -217,6 +217,11 @@ namespace ConsoleProject
             if(!dialog.canceledA)
             {
                 Answer answer = dialog.GetAnswer();
+                if(answer == null)
+                {
+                    MessageBox.ErrorQuery("oops", "can not create answer.", "OK");
+                    return;
+                }
                 long questionId = answerRepo.Insert(answer);
                 answer.id = questionId;
 

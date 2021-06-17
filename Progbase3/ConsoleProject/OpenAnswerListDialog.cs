@@ -64,7 +64,7 @@ namespace ConsoleProject
                 Height = Dim.Fill(),
             };
             allAnswersListView.OpenSelectedItem += OnOpenAnswer;
-            FrameView frameView = new FrameView("Questions")
+            FrameView frameView = new FrameView("Answers")
             {
                 X = 2,
                 Y = 6,
@@ -167,6 +167,7 @@ namespace ConsoleProject
 
             prevPageBtn.Visible = (pageNum != 1);
             nextPageBtn.Visible = (pageNum != totalPages );
+            Application.Refresh();
         }
 
         private void OnOpenAnswer(ListViewItemEventArgs args)

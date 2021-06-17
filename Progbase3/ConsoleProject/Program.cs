@@ -28,6 +28,13 @@ namespace ConsoleProject
 
             Application.Init();
 
+            if(!System.IO.File.Exists(databaseFileName))
+            {
+                MessageBox.ErrorQuery("oops", "DB file does not exist.", "OK");
+                return;
+            }
+
+
             Toplevel top = Application.Top; 
 
             MenuBar menu = new MenuBar(new MenuBarItem[] {
@@ -311,7 +318,14 @@ namespace ConsoleProject
             {
                 path = dialog.FilePath.ToString();
                 Im_Ex_port importer = new Im_Ex_port(connection);
-                importer.Import(path);
+                try
+                {
+                    importer.Import(path);
+                }
+                catch
+                {
+                    MessageBox.ErrorQuery("oops", "troubles with files", "OK");
+                }
             }
         }
 

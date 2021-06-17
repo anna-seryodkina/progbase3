@@ -29,7 +29,9 @@ namespace MyLib
             QuestionRepository questionRepository = new QuestionRepository(connection);
             AnswerRepository answerRepository = new AnswerRepository(connection);
 
-            string importPath = "";
+            string importPath = path;
+
+            path += "/archive.zip";
 
             ZipFile.ExtractToDirectory(@path, @importPath);
 
@@ -71,6 +73,7 @@ namespace MyLib
 
             // questions_answers.xml
             Root<Answer> questionAnswersRoot = new Root<Answer>();
+            questionAnswersRoot.root = new List<Answer>();
             foreach(Question question in user.questions)
             {
                 foreach(Answer answer in question.answers)
@@ -90,13 +93,14 @@ namespace MyLib
 
             // archive
             string startPath = @exportDirectoryName;
-            string zipPath = @exportDirectoryName + "/archive.zip";
+            string zipPath = @exportDirectoryName + ".zip";
 
             ZipFile.CreateFromDirectory(startPath, zipPath);
 
             File.Delete(usersAnswersPath);
             File.Delete(questionsPath);
             File.Delete(questionAnswersPath);
+            File.Move(zipPath, startPath + "/archive.zip");
         }
 
         private void Serialize<T>(string filename, Root<T> root)
